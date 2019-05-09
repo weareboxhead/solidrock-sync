@@ -1,0 +1,84 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * SolidrockSync plugin for Craft CMS 3.x
+ *
+ * SolidrockSync Settings.twig
+ *
+ * @author    Boxhead
+ * @copyright Copyright (c) 2018 Boxhead
+ * @link      https://boxhead.io
+ * @package   SolidrockSync
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    first: true,
+    label: 'Solidrock API URL',
+    instructions: 'Enter the Solidrock API URL',
+    id: 'apiUrl',
+    name: 'apiUrl',
+    value: settings.apiUrl
+}) }}
+
+{{ forms.textField({
+    label: 'Solidrock API Key',
+    instructions: 'Enter the API key you have been issued by Solidrock',
+    id: 'apiKey',
+    name: 'apiKey',
+    value: settings.apiKey
+}) }}
+
+{{ forms.textField({
+    label: 'Solidrock Auth Username',
+    instructions: 'Enter the Authentication Username for Solidrock',
+    id: 'apiUsername',
+    name: 'apiUsername',
+    value: settings.apiUsername
+}) }}
+
+{{ forms.passwordField({
+    label: 'Solidrock Auth Password',
+    instructions: 'Enter the Authentication Password for Solidrock',
+    id: 'apiPassword',
+    name: 'apiPassword',
+    value: settings.apiPassword
+}) }}
+
+{{ forms.textField({
+    label: 'Churches Section ID',
+    id: 'churchesSectionId',
+    name: 'churchesSectionId',
+    value: settings.churchesSectionId
+}) }}
+
+{{ forms.textField({
+    label: 'Churches Entry Type ID',
+    id: 'churchesEntryTypeId',
+    name: 'churchesEntryTypeId',
+    value: settings.churchesEntryTypeId
+}) }}
+
+{{ forms.textField({
+    label: 'Jobs Section ID',
+    id: 'jobsSectionId',
+    name: 'jobsSectionId',
+    value: settings.jobsSectionId
+}) }}
+
+{{ forms.textField({
+    label: 'Jobs Entry Type ID',
+    id: 'jobsEntryTypeId',
+    name: 'jobsEntryTypeId',
+    value: settings.jobsEntryTypeId
+}) }}
+
+{{ forms.textField({
+    label: 'Jobs Category Group ID',
+    id: 'jobsCategoryGroupId',
+    name: 'jobsCategoryGroupId',
+    value: settings.jobsCategoryGroupId
+}) }}

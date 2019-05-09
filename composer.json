@@ -1,0 +1,40 @@
+{
+    "name": "boxhead/craft-solidrock-sync",
+    "description": "Communicate and process data to and from the Solidrock API",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "solidrock"
+    ],
+    "support": {
+        "docs": "https://github.com/weareboxhead/solidrock-sync/blob/master/README.md",
+        "issues": "https://github.com/weareboxhead/solidrock-sync/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Boxhead",
+            "homepage": "https://boxhead.io"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "boxhead\\solidrocksync\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Solidrock Sync",
+        "handle": "solidrock-sync",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/weareboxhead/solidrock-sync/master/CHANGELOG.md",
+        "class": "boxhead\\solidrocksync\\SolidrockSync"
+    }
+}
