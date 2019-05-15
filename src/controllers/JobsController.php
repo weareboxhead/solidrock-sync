@@ -11,7 +11,7 @@
 namespace boxhead\solidrocksync\controllers;
 
 use boxhead\solidrocksync\SolidrockSync;
-use boxhead\solidrocksync\tasks\SolidrockJobsSyncTask as SolidrockJobsSyncTaskTask;
+use boxhead\solidrocksync\jobs\SolidrockSyncJobsJob;
 
 use Craft;
 use craft\web\Controller;
@@ -73,14 +73,11 @@ class JobsController extends Controller
      * @return mixed
      */
     public function actionUpdateLocalData() {
-        $tasks = Craft::$app->getTasks();
+        // Provide higher time to retry than the default 300 seconds
+        Craft::$app->queue->ttr(600);
+        
+        Craft::$app->queue->push(new SolidrockSyncJobsJob());
 
-        if (!$tasks->areTasksPending(SolidrockJobsSyncTaskTask::class)) {
-            $tasks->createTask(SolidrockJobsSyncTaskTask::class);
-        }
-
-        $result = 'Updating local Solidrock jobs data';
-
-        return $result;
+        return 'Updating local Solidrock jobs data';
     }
 }

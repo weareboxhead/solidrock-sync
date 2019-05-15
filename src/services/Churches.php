@@ -188,6 +188,13 @@ class Churches extends Component
 
     private function requestSingleGathering($id)
     {
+        if (! $this->client)
+        {
+            $this->createGuzzleClient();
+        }
+
+        Craft::info('SolidrockSync: API Call: Single Gathering – ' . $id, __METHOD__);
+
         // Get the full gathering record
         $response = $this->client->request('POST', 'churches/single_gathering.json', [
             'form_params' => [
@@ -266,9 +273,14 @@ class Churches extends Component
     }
 
 
-    private function getLocalData()
+    public function getLocalData()
     {
         Craft::info('SolidrockSync: Get local Gathering data', __METHOD__);
+
+        if (!\is_array($this->settings))
+        {
+            $this->settings = SolidrockSync::$plugin->getSettings();
+        }
 
         // Create a Craft Element Criteria Model
         $query = Entry::find()
@@ -333,7 +345,7 @@ class Churches extends Component
     }
 
 
-    private function updateEntry($entryId, $gatheringId)
+    public function updateEntry($entryId, $gatheringId)
     {
         $record = $this->requestSingleGathering($gatheringId);
 
@@ -458,12 +470,12 @@ class Churches extends Component
                     'serviceFrequency'          => $service->frequency ?? '',
                     'serviceDay'                => $service->day ?? '',
                     'serviceStartTime'          => [
-                        'time'      => (isset($service->start_time_hour) && isset($service->start_time_minute)) ? $service->start_time_hour . ':' . $service->start_time_minute : ''
-                        // 'timezone'  => 'Europe/London'
+                        'time'      => (isset($service->start_time_hour) && isset($service->start_time_minute)) ? $service->start_time_hour . ':' . $service->start_time_minute : '',
+                        'timezone'  => 'Europe/London'
                     ],
                     'serviceEndTime'            => [
-                        'time'      => (isset($service->end_time_hour) && isset($service->end_time_minute)) ? $service->end_time_hour . ':' . $service->end_time_minute : ''
-                        // 'timezone'  => 'Europe/London'
+                        'time'      => (isset($service->end_time_hour) && isset($service->end_time_minute)) ? $service->end_time_hour . ':' . $service->end_time_minute : '',
+                        'timezone'  => 'Europe/London'
                     ],
                     'serviceIsPrimaryService'   => (isset($service->is_primary_service) && $service->is_primary_service === 'y') ? 1 : 0,
                     'serviceAddressLine1'       => $service->address_line_1 ?? '',
@@ -481,9 +493,7 @@ class Churches extends Component
 
             $count++;
         }
-//         if (count($services) > 1) {
-// $this->dd($returnArray);
-//         }
+
         return $returnArray;
     }
 

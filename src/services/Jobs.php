@@ -186,6 +186,11 @@ class Jobs extends Component
 
     private function requestSingleJob($id)
     {
+        if (! $this->client)
+        {
+            $this->createGuzzleClient();
+        }
+
         // Get the full job record
         $response = $this->client->request('POST', 'jobs/single_job.json', [
             'form_params' => [
@@ -266,6 +271,11 @@ class Jobs extends Component
     private function getLocalData()
     {
         Craft::info('SolidrockSync: Get local Job data', __METHOD__);
+
+        if (!\is_array($this->settings))
+        {
+            $this->settings = SolidrockSync::$plugin->getSettings();
+        }
 
         // Create a Craft Element Criteria Model
         $query = Entry::find()

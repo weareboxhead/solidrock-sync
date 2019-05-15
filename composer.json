@@ -2,7 +2,7 @@
     "name": "boxhead/craft-solidrock-sync",
     "description": "Communicate and process data to and from the Solidrock API",
     "type": "craft-plugin",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "keywords": [
         "craft",
         "cms",

@@ -11,7 +11,7 @@
 namespace boxhead\solidrocksync\controllers;
 
 use boxhead\solidrocksync\SolidrockSync;
-use boxhead\solidrocksync\tasks\SolidrockChurchesSyncTask as SolidrockChurchesSyncTaskTask;
+use boxhead\solidrocksync\jobs\SolidrockSyncChurchesJob;
 
 use Craft;
 use craft\web\Controller;
@@ -73,14 +73,11 @@ class ChurchesController extends Controller
      * @return mixed
      */
     public function actionUpdateLocalData() {
-        $tasks = Craft::$app->getTasks();
+        // Provide higher time to retry than the default 300 seconds
+        Craft::$app->queue->ttr(600);
 
-        if (!$tasks->areTasksPending(SolidrockChurchesSyncTaskTask::class)) {
-            $tasks->createTask(SolidrockChurchesSyncTaskTask::class);
-        }
+        Craft::$app->queue->push(new SolidrockSyncChurchesJob());
 
-        $result = 'Updating local Solidrock gathering data';
-
-        return $result;
+        return 'Updating local Solidrock gathering data';
     }
 }
