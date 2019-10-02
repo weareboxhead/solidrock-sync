@@ -1,6 +1,6 @@
 # Solidrock Sync plugin for Craft CMS 3.x
 
-Communicate and process data to and from the Solidrock API
+Sync data from the Solidrock CRM API into Craft elements
 
 ## Requirements
 
@@ -20,22 +20,14 @@ To install the plugin, follow these instructions.
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Solidrock Sync.
 
+4. Within the settings page for the plugin fill out the required API authorisation and connection fields
+
 ## Solidrock Sync Overview
 
--Insert text here-
-
-## Configuring Solidrock Sync
-
--Insert text here-
+Sync Church Gathering and Job records into Craft Entries.
 
 ## Using Solidrock Sync
 
--Insert text here-
-
-## Solidrock Sync Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Release it
+From your domain visit /solidrock/sync/churches and /solidrock/sync/jobs to sync those respective Solidrock CRM records.
 
 Brought to you by [Boxhead](https://boxhead.io)

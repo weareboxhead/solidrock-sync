@@ -21,6 +21,9 @@ use craft\queue\BaseJob;
  */
 class SolidrockSyncUpdateChurchJob extends BaseJob
 {
+    // Public Properties
+    // =========================================================================
+
     public $gathering;
     public $entry;
 

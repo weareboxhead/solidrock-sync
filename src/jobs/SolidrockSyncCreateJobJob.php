@@ -23,6 +23,7 @@ class SolidrockSyncCreateJobJob extends BaseJob
 {
     // Public Properties
     // =========================================================================
+
     public $job;
 
     // Public Methods

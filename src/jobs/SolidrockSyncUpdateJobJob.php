@@ -21,6 +21,9 @@ use craft\queue\BaseJob;
  */
 class SolidrockSyncUpdateJobJob extends BaseJob
 {
+    // Public Properties
+    // =========================================================================
+
     public $job;
     public $entry;
 
