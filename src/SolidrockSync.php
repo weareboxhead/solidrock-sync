@@ -11,16 +11,13 @@
 namespace boxhead\solidrocksync;
 
 use boxhead\solidrocksync\models\Settings;
-
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
-use craft\web\UrlManager;
-use craft\services\Elements;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
-
+use craft\services\Elements;
+use craft\services\Plugins;
+use craft\web\UrlManager;
 use yii\base\Event;
 
 /**
@@ -76,18 +73,16 @@ class SolidrockSync extends Plugin
 
         $this->setComponents([
             'jobs' => \boxhead\solidrocksync\services\Jobs::class,
-            'churches' => \boxhead\solidrocksync\services\Churches::class
-        ]); 
+            'churches' => \boxhead\solidrocksync\services\Churches::class,
+        ]);
 
         // Register our site routes
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['solidrock/sync/churches']    = 'solidrock-sync/churches/sync-with-remote';
-                $event->rules['solidrock/update/churches']  = 'solidrock-sync/churches/update-local-data';
-                $event->rules['solidrock/sync/jobs']        = 'solidrock-sync/jobs/sync-with-remote';
-                $event->rules['solidrock/update/jobs']      = 'solidrock-sync/jobs/update-local-data';
+                $event->rules['solidrock/sync/churches'] = 'solidrock-sync/churches/sync-with-remote';
+                $event->rules['solidrock/sync/jobs'] = 'solidrock-sync/jobs/sync-with-remote';
             }
         );
 
@@ -113,7 +108,6 @@ class SolidrockSync extends Plugin
         return new Settings();
     }
 
-
     /**
      * Returns the rendered settings HTML, which will be inserted into the content
      * block on the settings page.
@@ -125,7 +119,7 @@ class SolidrockSync extends Plugin
         return Craft::$app->getView()->renderTemplate(
             'solidrock-sync/settings',
             [
-                'settings' => $this->getSettings()
+                'settings' => $this->getSettings(),
             ]
         );
     }

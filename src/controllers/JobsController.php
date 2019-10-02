@@ -10,10 +10,11 @@
 
 namespace boxhead\solidrocksync\controllers;
 
+use boxhead\solidrocksync\jobs\SolidrockSyncCreateJobJob;
+use boxhead\solidrocksync\jobs\SolidrockSyncUpdateJobJob;
 use boxhead\solidrocksync\SolidrockSync;
-use boxhead\solidrocksync\jobs\SolidrockSyncJobsJob;
-
 use Craft;
+use craft\elements\Entry;
 use craft\web\Controller;
 
 /**
@@ -47,7 +48,11 @@ class JobsController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['sync-with-remote', 'update-local-data'];
+    protected $allowAnonymous = ['sync-with-remote'];
+
+    private $remoteData;
+    private $localData;
+    private $settings;
 
     // Public Methods
     // =========================================================================
@@ -58,26 +63,96 @@ class JobsController extends Controller
      *
      * @return mixed
      */
-    public function actionSyncWithRemote() {
-        SolidrockSync::getInstance()->jobs->sync();
+    public function actionSyncWithRemote()
+    {
+        $this->settings = SolidrockSync::$plugin->getSettings();
+
+        $this->remoteData = SolidrockSync::$plugin->jobs->getAPIData();
+
+        if (!$this->remoteData) {
+            Craft::Info('Sync Jobs: No api data to work with', __METHOD__);
+        }
+
+        $this->localData = SolidrockSync::$plugin->jobs->getLocalData();
+
+        // Determine jobs we need to create vs. update vs. disable
+
+        // Which remote jobs do we have that aren't yet Craft entries?
+        $missingIds = array_diff($this->remoteData['ids'], $this->localData['ids']);
+
+        // Which Craft entries do we have that aren't in the remote data?
+        $removedIds = array_diff($this->localData['ids'], $this->remoteData['ids']);
+
+        // Which remote jobs to we have that already have a Craft entry?
+        $updatingIds = array_diff($this->remoteData['ids'], $missingIds);
+
+        // Provide higher time to retry than the default 300 seconds
+        Craft::$app->queue->ttr(600);
+
+        // Create all missing jobs
+        foreach ($missingIds as $jobId) {
+            // $this->dd($this->remoteData['jobs'][$jobId]);
+            Craft::$app->queue->push(new SolidrockSyncCreateJobJob([
+                'job' => $this->remoteData['jobs'][$jobId],
+            ]));
+        }
+
+        // Update all existing jobs
+        foreach ($updatingIds as $jobId) {
+            $entryId = $this->localData['jobs'][$jobId];
+            $job = $this->remoteData['jobs'][$jobId]->job;
+
+            // Find existing Craft Entry Model
+            $entry = Entry::find()
+                ->sectionId($this->settings->jobsSectionId)
+                ->id($entryId)
+                ->status(null)
+                ->one();
+
+            // Check if the SR record has been updated since we last updated the craft record
+            // and only update the craft entry if it has
+            // $srLastUpdated = strtotime($job->last_updated);
+
+            if (
+                $entry
+                // && ($srLastUpdated > $entry->dateUpdated->getTimestamp())
+            ) {
+                Craft::$app->queue->push(new SolidrockSyncUpdateJobJob([
+                    'job' => $this->remoteData['jobs'][$jobId],
+                    'entry' => $entry,
+                ]));
+            }
+        }
+
+        foreach ($removedIds as $id) {
+            $entryId = $this->localData['jobs'][$id];
+
+            // Create a new instance of the Craft Entry Model
+            $entry = Entry::find()
+                ->sectionId($this->settings->jobsSectionId)
+                ->id($entryId)
+                ->status(null)
+                ->one();
+
+            // If we've got an entry and it's set to enabled, then disable it
+            if ($entry && $entry->enabled) {
+                $entry->enabled = false;
+
+                // Re-save the entry
+                Craft::$app->elements->saveElement($entry);
+            }
+        }
 
         $result = 'Syncing remote Solidrock jobs data';
 
         return $result;
     }
 
-    /**
-     * Handle a request going to our plugin's actionUpdateLocalData URL,
-     * e.g.: actions/solidrock-sync/jobs/update-local-data
-     *
-     * @return mixed
-     */
-    public function actionUpdateLocalData() {
-        // Provide higher time to retry than the default 300 seconds
-        Craft::$app->queue->ttr(600);
-        
-        Craft::$app->queue->push(new SolidrockSyncJobsJob());
-
-        return 'Updating local Solidrock jobs data';
+    private function dd($data)
+    {
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+        die();
     }
 }
