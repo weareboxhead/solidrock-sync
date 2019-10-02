@@ -91,7 +91,6 @@ class JobsController extends Controller
 
         // Create all missing jobs
         foreach ($missingIds as $jobId) {
-            // $this->dd($this->remoteData['jobs'][$jobId]);
             Craft::$app->queue->push(new SolidrockSyncCreateJobJob([
                 'job' => $this->remoteData['jobs'][$jobId],
             ]));
