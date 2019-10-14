@@ -276,6 +276,7 @@ class Churches extends Component
                     'serviceName' => $service->name ?? '',
                     'serviceFrequency' => $service->frequency ?? '',
                     'serviceDay' => $service->day ?? '',
+                    'serviceDayOfTheWeek' => (isset($service->day) && !empty($service->day)) ? date('w', strtotime($service->day)) : '',
                     'serviceStartTime' => [
                         'time' => (isset($service->start_time_hour) && isset($service->start_time_minute)) ? $service->start_time_hour . ':' . $service->start_time_minute : '',
                         'timezone' => 'Europe/London',
