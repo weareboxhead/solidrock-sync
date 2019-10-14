@@ -108,8 +108,14 @@ class JobsController extends Controller
                 ->status(null)
                 ->one();
 
-            // If we found a Craft entry update it
-            if ($entry) {
+            // Check if the SR record has been updated since we last updated the craft record
+            // and only update the craft entry if it has
+            $srLastUpdated = strtotime($job->last_updated);
+
+            if (
+                $entry &&
+                ($srLastUpdated > $entry->dateUpdated->getTimestamp())
+            ) {
                 Craft::$app->queue->push(new SolidrockSyncUpdateJobJob([
                     'job' => $this->remoteData['jobs'][$jobId],
                     'entry' => $entry,

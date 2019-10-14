@@ -228,6 +228,7 @@ class Churches extends Component
             'gatheringCountry' => $address->country ?? '',
             'gatheringLatitude' => $address->lat ?? '',
             'gatheringLongitude' => $address->lng ?? '',
+            'gatheringShowOfficeAddress' => ($gathering->opt_in_address_display === 'n') ? 0 : 1,
 
             // Social
             'gatheringFacebookUrl' => $social->facebook_page_url ?? '',
