@@ -237,6 +237,7 @@ class Churches extends Component
             'gatheringVimeoUrl' => $social->vimeo_url ?? '',
             'gatheringYoutubeUrl' => $social->youtube_url ?? '',
             'gatheringItunesUrl' => $social->itunes_rss_url ?? '',
+            'gatheringInstagramUrl' => $social->instagram_profile_url ?? '',
 
             // Images
             'gatheringLogoUrl' => $images->logo[0]->file_src ?? '',
